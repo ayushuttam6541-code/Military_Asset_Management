@@ -93,12 +93,12 @@ military-asset-management/
 
 ### Prerequisites
 
-- Node.js (v18 or higher)
+- Node.js 
 - npm or pnpm
 - PostgreSQL (or use Docker)
 - Git
 
-### Option 1: Using Docker (Recommended)
+### Option 1: Using Docker 
 
 1. **Clone the repository**
    ```bash
@@ -115,7 +115,7 @@ military-asset-management/
    ```bash
    cd backend
    npm install
-   cp .env.example .env
+  
    # Edit .env with your configuration
    npx prisma generate
    npx prisma migrate dev --name init
@@ -127,8 +127,6 @@ military-asset-management/
    ```bash
    cd frontend
    npm install
-   cp .env.example .env
-   # Edit .env with your API URL
    npm run dev
    ```
 
@@ -141,13 +139,6 @@ military-asset-management/
    CREATE DATABASE military_asset_db;
    ```
 
-3. **Configure backend .env**
-   ```
-   DATABASE_URL="postgresql://postgres:your_password@localhost:5432/military_asset_db?schema=public"
-   JWT_SECRET="your-super-secret-jwt-key"
-   PORT=5000
-   NODE_ENV=development
-   ```
 
 4. **Follow steps 3-4 from Option 1**
 
@@ -155,8 +146,8 @@ military-asset-management/
 
 ### Backend (.env)
 ```
-DATABASE_URL="postgresql://postgres:password@localhost:5432/military_asset_db?schema=public"
-JWT_SECRET="your-super-secret-jwt-key-change-in-production"
+DATABASE_URL=""
+JWT_SECRET=""
 PORT=5000
 NODE_ENV=development
 ```
@@ -335,3 +326,6 @@ ISC
 ## Support
 
 For issues and questions, please open an issue in the repository.
+
+## Author 
+Ayush Raj
