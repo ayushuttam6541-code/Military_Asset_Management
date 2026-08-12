@@ -1,0 +1,191 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  username     String   @unique
+  passwordHash String
+  role         UserRole
+  baseId       Int?
+  base         Base?    @relation("UserBase", fields: [baseId], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  initiatedTransfers Transfer[] @relation("TransferInitiator")
+  auditLogs         AuditLog[] @relation("UserAuditLogs")
+
+  @@map("users")
+}
+
+model Base {
+  id        Int          @id @default(autoincrement())
+  name      String
+  location  String
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  users           User[]           @relation("UserBase")
+  purchases       Purchase[]
+  sourceTransfers Transfer[]      @relation("SourceBase")
+  destTransfers   Transfer[]      @relation("DestinationBase")
+  assets          Asset[]
+  assignments     Assignment[]
+  expenditures    Expenditure[]
+
+  @@map("bases")
+}
+
+model EquipmentType {
+  id          Int          @id @default(autoincrement())
+  name        String
+  category    EquipmentCategory
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  purchases    Purchase[]
+  transfers    Transfer[]
+  assets       Asset[]
+  assignments  Assignment[]
+  expenditures Expenditure[]
+
+  @@map("equipment_types")
+}
+
+model Asset {
+  id              Int          @id @default(autoincrement())
+  equipmentTypeId Int
+  equipmentType   EquipmentType @relation(fields: [equipmentTypeId], references: [id])
+  baseId          Int
+  base            Base         @relation(fields: [baseId], references: [id])
+  serialNumber    String?
+  quantity        Int          @default(1)
+  status          AssetStatus  @default(AVAILABLE)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@map("assets")
+}
+
+model Purchase {
+  id              Int          @id @default(autoincrement())
+  baseId          Int
+  base            Base         @relation(fields: [baseId], references: [id])
+  equipmentTypeId Int
+  equipmentType   EquipmentType @relation(fields: [equipmentTypeId], references: [id])
+  quantity        Int
+  purchaseDate    DateTime
+  referenceNumber String?
+  createdBy       Int
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@map("purchases")
+}
+
+model Transfer {
+  id                  Int           @id @default(autoincrement())
+  sourceBaseId        Int
+  sourceBase          Base          @relation("SourceBase", fields: [sourceBaseId], references: [id])
+  destinationBaseId   Int
+  destinationBase     Base          @relation("DestinationBase", fields: [destinationBaseId], references: [id])
+  equipmentTypeId     Int
+  equipmentType       EquipmentType @relation(fields: [equipmentTypeId], references: [id])
+  quantity            Int
+  status              TransferStatus @default(PENDING)
+  timestamp           DateTime      @default(now())
+  initiatedBy         Int
+  initiator           User          @relation("TransferInitiator", fields: [initiatedBy], references: [id])
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+
+  @@map("transfers")
+}
+
+model Assignment {
+  id              Int          @id @default(autoincrement())
+  baseId          Int
+  base            Base         @relation(fields: [baseId], references: [id])
+  equipmentTypeId Int
+  equipmentType   EquipmentType @relation(fields: [equipmentTypeId], references: [id])
+  assetId         Int?
+  personnelName   String
+  quantity        Int
+  assignedAt      DateTime     @default(now())
+  assignedBy      Int
+  status          AssignmentStatus @default(ACTIVE)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@map("assignments")
+}
+
+model Expenditure {
+  id              Int          @id @default(autoincrement())
+  baseId          Int
+  base            Base         @relation(fields: [baseId], references: [id])
+  equipmentTypeId Int
+  equipmentType   EquipmentType @relation(fields: [equipmentTypeId], references: [id])
+  quantity        Int
+  reason          String
+  expendedAt      DateTime     @default(now())
+  recordedBy      Int
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@map("expenditures")
+}
+
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation("UserAuditLogs", fields: [userId], references: [id])
+  action    String
+  entityType String?
+  entityId   Int?
+  details    String
+  ipAddress  String?
+  createdAt DateTime @default(now())
+
+  @@map("audit_logs")
+}
+
+enum UserRole {
+  ADMIN
+  BASE_COMMANDER
+  LOGISTICS_OFFICER
+}
+
+enum EquipmentCategory {
+  WEAPON
+  VEHICLE
+  AMMUNITION
+  OTHER
+}
+
+enum AssetStatus {
+  AVAILABLE
+  ASSIGNED
+  MAINTENANCE
+  RETIRED
+}
+
+enum TransferStatus {
+  PENDING
+  IN_TRANSIT
+  COMPLETED
+  CANCELLED
+}
+
+enum AssignmentStatus {
+  ACTIVE
+  RETURNED
+}
