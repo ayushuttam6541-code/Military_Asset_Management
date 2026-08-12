@@ -59,13 +59,13 @@ The Military Asset Management System is an enterprise-grade web application desi
 
 ### Frontend Technology Stack
 
-**React (v18)**
+**React **
 - **Justification**: Component-based architecture with virtual DOM for efficient rendering. Large ecosystem and excellent developer experience.
 
 **Vite**
 - **Justification**: Fast build tool with hot module replacement. Significantly faster development experience compared to Create React App.
 
-**React Router (v6)**
+**React Router **
 - **Justification**: Declarative routing for SPA navigation. Supports protected routes and nested routing.
 
 **Tailwind CSS**
@@ -456,11 +456,7 @@ npm install
 # Create environment file
 cp .env.example .env
 
-# Edit .env (default values work with Docker)
-# DATABASE_URL="postgresql://postgres:password@localhost:5432/military_asset_db?schema=public"
-# JWT_SECRET="your-super-secret-jwt-key-change-in-production"
-# PORT=5000
-# NODE_ENV=development
+
 
 # Generate Prisma client
 npx prisma generate
@@ -529,26 +525,6 @@ CREATE DATABASE military_asset_db;
 \q
 ```
 
-#### Step 4: Configure Backend .env
-```
-DATABASE_URL="postgresql://postgres:your_password@localhost:5432/military_asset_db?schema=public"
-JWT_SECRET="your-super-secret-jwt-key-change-in-production"
-PORT=5000
-NODE_ENV=development
-```
-
-#### Step 5: Follow Backend Setup from Option 1 (Step 3)
-#### Step 6: Follow Frontend Setup from Option 1 (Step 4)
-
-### Environment Variables
-
-**Backend (.env)**
-```bash
-# Database Connection
-DATABASE_URL="postgresql://postgres:password@localhost:5432/military_asset_db?schema=public"
-
-# JWT Secret (change in production)
-JWT_SECRET="your-super-secret-jwt-key-change-in-production"
 
 # Server Configuration
 PORT=5000
@@ -1447,5 +1423,5 @@ CREATE TABLE audit_logs (
 ---
 
 **Document Version**: 1.0  
-**Last Updated**: January 2024  
-**Author**: Military Asset Management System Development Team
+**Last Updated**: August 2026  
+**Author**: Ayush Raj
